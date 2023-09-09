@@ -50,7 +50,5 @@ else
   echo "Erro durante a execução das operações."
 fi
 
-# Executa o instalador.sh
-./instalador.sh
-
+# Retorna ao instalador.sh
 exit 0
