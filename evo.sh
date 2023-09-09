@@ -35,19 +35,25 @@ done
 
 # Continuar com o download e configuração da Evolution API
 echo "Baixando Evolution API..."
+
+cd #
+
 git clone https://github.com/system-help-solution/evolutionApi_modificacoes.git
 
 # Navega até o diretório da Evolution API
 cd ~/evolutionApi_modificacoes/src
 
 # Edita o arquivo dev-env.yml para configurar a porta e URL corretamente
-sed -i "s/PORT: 8080/PORT: $porta_vps/" dev-env.yml
+sed -i "s/PORT: 8081/PORT: $porta_vps/" dev-env.yml
 sed -i "s/URL: localhost/URL: http:\/\/$ip_vps:$porta_vps/" dev-env.yml
 
 # Renomeia o arquivo dev-env.yml para env.yml
 mv dev-env.yml env.yml
 
 echo "Arquivo dev-env.yml renomeado para env.yml com sucesso."
+
+# Volta para o diretório principal
+cd ~/evolutionApi_modificacoes
 
 # Instalação e configuração do Evolution API
 echo "Instalando pacotes..."
@@ -60,8 +66,12 @@ pm2 start 'npm run start:prod' --name ApiEvolution
 # Configurar PM2 para iniciar na inicialização do sistema
 pm2 startup
 
+pm2 save
+
 # Salvar a configuração do PM2
 pm2 save --force
+
+pm2 save
 
 echo "Evolution API instalado e configurado com sucesso."
 
