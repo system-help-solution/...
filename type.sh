@@ -155,6 +155,7 @@ services:
       - S3_ACCESS_KEY=minio # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
       - S3_SECRET_KEY=minio123 # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
       - S3_BUCKET=typebot
+      
       - S3_ENDPOINT=$dominio_boot # Troque pelo seu dominio ou subdominio
   mail:
     image: bytemark/smtp
@@ -209,3 +210,10 @@ EOL
 else
   echo "As informações não estão corretas. Por favor, execute o script novamente."
 fi
+
+
+
+cd #
+cd ...
+
+./instalador.sh
