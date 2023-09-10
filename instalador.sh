@@ -22,7 +22,7 @@ display_menu() {
   echo
   echo "Escolha uma opção para instalação:"
   echo "1. Instalar Evolution API"
-  echo "2. Instalar Chatwoot 2.18.0 Edition"
+  echo "2. Instalar Chatwoot 2.18.0 Edition(Fazendo melhorias status oof)"
   echo "3. Instalar Chatwoot 3.0 Edition"
   echo "4. Sair"
   echo
@@ -46,13 +46,13 @@ case $option in
     ;;
   2)
     # Dar permissão de execução ao chatwoot_2_18.sh
-    chmod +x chatwoot_2_18.sh
-    ./chatwoot_2_18.sh
+    #chmod +x chatwoot_2_18.sh
+   # ./chatwoot_2_18.sh
     ;;
   3)
     # Dar permissão de execução ao chatwoot_3_0.sh
     chmod +x chatwoot_3_0.sh
-    ./chatwoot_3_0.sh
+    ./chat_3_0.sh
     ;;
   4)
     echo "Saindo do instalador."
