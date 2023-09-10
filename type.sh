@@ -1,18 +1,7 @@
 #!/bin/bash
 
-# Função para exibir o banner do arquivo banner.sh
-display_banner() {
-  clear
-  if [ -f banner.sh ]; then
-    source banner.sh
-  else
-    echo "Banner não encontrado. Verifique se o arquivo banner.sh está na mesma pasta."
-  fi
-  sleep 3  # Tempo de exibição do banner (3 segundos)
-}
-
-# Exibe o banner informativo
-display_banner
+# Incluir o banner.sh para exibição do banner
+source ./banner.sh
 
 # Função para coletar uma variável com confirmação
 function coletar_com_confirmacao() {
@@ -51,25 +40,32 @@ function verificar_e_instalar_dependencias() {
   fi
 }
 
-# Coleta das informações
-dominio_typeboot=$(coletar_com_confirmacao "Seu domínio para o Typeboot")
-domino_boot=$(coletar_com_confirmacao "Seu domínio para o Boot do Typeboot")
-email_google=$(coletar_com_confirmacao "Seu email do Google (Gmail)")
-senha_app_google=$(coletar_com_confirmacao "Senha do aplicativo do Google (Gmail)")
-key_gerada=$(coletar_com_confirmacao "Sua chave gerada")
+source ./banner.sh
 
-# Exibe as informações coletadas para confirmação
-echo -e "\nConfirme as informações:"
+echo "Bem-vindo à configuração do Typeboot!"
+echo "Vou fazer algumas perguntas para configurar seu ambiente."
+echo "Vamos lá!"
+
+# Coleta das informações
+read -p "Por favor, insira seu domínio para o Typeboot: " dominio_typeboot
+read -p "Agora, insira seu domínio para o Boot do Typeboot: " dominio_boot
+read -p "Digite seu email do Google (Gmail): " email_google
+read -p "Digite a senha do aplicativo do Google (Gmail): " senha_app_google
+read -p "Por favor, insira a chave gerada: " key_gerada
+
+# Exibe as informações coletadas
+echo -e "\nInformações inseridas:"
 echo "Domínio Typeboot: $dominio_typeboot"
-echo "Domínio Boot Typeboot: $domino_boot"
+echo "Domínio Boot Typeboot: $dominio_boot"
 echo "Email do Google: $email_google"
-echo "Senha do App do Google: ************ (apenas os últimos caracteres)"
+echo "Senha do App do Google: ************"
 echo "Chave Gerada: $key_gerada"
 
 read -p "As informações estão corretas? (y/n): " confirmacao_final
 
 if [ "$confirmacao_final" == "y" ]; then
   echo "Continuando com a instalação..."
+
 
   # Verificar e instalar dependências
   verificar_e_instalar_dependencias "docker"
@@ -111,7 +107,7 @@ services:
     labels:
       virtual.host: '$dominio_typeboot' # Troque pelo seu domínio ou subdominio
       virtual.port: '3000'
-      virtual.tls-email: '$email_typeboot' # Troque pelo seu email
+      virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-builder:latest
     restart: always
     ports:
@@ -123,27 +119,27 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu domínio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$domino_boot # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=$key_gere
-      - ADMIN_EMAIL=$email_typeboot # Troque pelo seu email
+      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
+      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
+      - ENCRYPTION_SECRET=$key_gerada
+      - ADMIN_EMAIL=$email_google # Troque pelo seu email
       - DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
       - SMTP_AUTH_DISABLED=false
-      - SMTP_SECURE=true # Troque para false seu nao usar a porta 465 ou se estiver enfretando problemas no login
-      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
-      - SMTP_PORT=587 # altere aqui se nescessario portas comuns 25, 587, 465, 2525
-      - SMTP_USERNAME=$email_typeboot # troque pelo seu email
+      - SMTP_SECURE=true # Troque para false seu nao usar a porta 465 ou se estiver enfrentando problemas no login
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PRÓPRIOS
+      - SMTP_PORT=587 # altere aqui se necessário portas comuns 25, 587, 465, 2525
+      - SMTP_USERNAME=$email_google # troque pelo seu email
       - SMTP_PASSWORD=$senha_app_google # Troque pela sua senha
-      - NEXT_PUBLIC_SMTP_FROM=$email_typeboot # Troque pelo seu email
-      - S3_ACCESS_KEY=minio # Troque se necessario
-      - S3_SECRET_KEY=minio123 # Troque se necessario
+      - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
+      - S3_ACCESS_KEY=minio # Troque se necessário
+      - S3_SECRET_KEY=minio123 # Troque se necessário
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=$domino_boot # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$dominio_boot # Troque pelo seu dominio ou subdominio
   typebot-viewer:
     labels:
-      virtual.host: '$domino_boot' # Troque pelo seu domínio ou subdominio
+      virtual.host: '$dominio_boot' # Troque pelo seu domínio ou subdominio
       virtual.port: '3000'
-      virtual.tls-email: '$email_typeboot' # Troque pelo seu email
+      virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-viewer:latest
     restart: always
     ports:
@@ -151,33 +147,33 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu domínio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$domino_boot # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=$key_gere
-      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
-      - NEXT_PUBLIC_SMTP_FROM=$email_typeboot # Troque pelo seu email
-      - S3_ACCESS_KEY=minio # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
-      - S3_SECRET_KEY=minio123 # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
+      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
+      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
+      - ENCRYPTION_SECRET=$key_gerada
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PRÓPRIOS
+      - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
+      - S3_ACCESS_KEY=minio # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
+      - S3_SECRET_KEY=minio123 # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=$domino_boot # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$dominio_boot # Troque pelo seu dominio ou subdominio
   mail:
     image: bytemark/smtp
     restart: always
   minio:
     labels:
-      virtual.host: '$domino_boot' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$dominio_boot' # Troque pelo seu dominio ou subdominio
       virtual.port: '9000'
-      virtual.tls-email: '$email_typeboot' # Troque pelo seu email
+      virtual.tls-email: '$email_google' # Troque pelo seu email
     image: minio/minio
     command: server /data
     ports:
       - '9000:9000'
     environment:
-      MINIO_ROOT_USER: minio # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
-      MINIO_ROOT_PASSWORD: minio123 # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
+      MINIO_ROOT_USER: minio # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
+      MINIO_ROOT_PASSWORD: minio123 # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
     volumes:
       - s3_data:/data
-  # This service just make sure a bucket with the right policies is created
+  # This service just makes sure a bucket with the right policies is created
 
   # Certifique-se de atualizar S3_ACCESS_KEY , S3_SECRET_KEY abaixo para corresponder às suas configurações do S3, elas estão no final dessa linha /usr/bin/mc config host add minio http://minio:9000 minio minio123; sendo o usuario e a senha em sequencia.
   createbuckets:
@@ -210,14 +206,6 @@ EOL
     echo "Erro ao iniciar o Typeboot. Verifique as dependências e tente novamente."
   fi
 
-  # Voltar para o instalador.sh
-  exec ./instalador.sh
 else
   echo "As informações não estão corretas. Por favor, execute o script novamente."
-fi
-
-# Exibir o banner2.sh por 5 segundos
-sleep 5
-if [ -f banner2.sh ]; then
-  source banner2.sh
 fi
