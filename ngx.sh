@@ -14,29 +14,8 @@ display_banner() {
 # Exibe o banner informativo
 display_banner
 
-# Função para verificar e instalar dependências
-function verificar_e_instalar_dependencias() {
-  local dependencia="$1"
-  if ! command -v "$dependencia" &>/dev/null; then
-    echo "$dependencia não encontrado. Instalando..."
-    if [ "$dependencia" == "docker" ]; then
-      sudo apt update -y
-      sudo apt install -y docker.io
-    elif [ "$dependencia" == "docker-compose" ]; then
-      sudo apt update -y
-      sudo apt install -y docker-compose
-    else
-      echo "Dependência desconhecida: $dependencia. Por favor, instale manualmente."
-      exit 1
-    fi
-  fi
-}
+curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && docker swarm join-token manager && apt update -y && apt install docker-compose -y && docker network create npm_public && docker volume create --name=npm_data && docker volume create --name=npm_letsencrypt
 
-# Verificar e instalar dependências
-verificar_e_instalar_dependencias "docker"
-verificar_e_instalar_dependencias "docker-compose"
-
-# Criar a pasta 'ngx' no diretório atual
 
 cd #
 
@@ -61,7 +40,7 @@ services:
       # These ports are in format <host-port>:<container-port>
       - '81:80' # Public HTTP Port
       - '443:443' # Public HTTPS Port
-      - '81:81' # Admin Web Port
+      - '84:84' # Admin Web Port
     deploy:
       replicas: 1
       placement:
