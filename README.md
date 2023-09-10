@@ -15,5 +15,5 @@ git clone https://github.com/system-help-solution/....git && cd ... && chmod +x 
 
 # CASO DER ERRO NO ESCRYPT ENTRAR ASSIM 
 
-cd # && cd ...&& sudo ./instalador 
+cd # && cd ... && sudo ./instalador 
 
