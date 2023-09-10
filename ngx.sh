@@ -1,69 +1,63 @@
 #!/bin/bash
 
-# Atualize o sistema
-sudo apt update
-sudo apt upgrade -y
+# Verifica se o script está sendo executado como root (sudo)
+if [[ $EUID -ne 0 ]]; then
+    echo "Este script deve ser executado como root (sudo)." 
+    exit 1
+fi
 
-# Instale as dependências
-sudo apt install -y ca-certificates curl gnupg2 apt-transport-https lsb-release
+# Atualiza o sistema
+apt update
+apt upgrade -y
 
-# Adicione o repositório oficial do Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Instala dependências
+apt install -y curl sqlite3 docker.io docker-compose ufw
 
-# Atualize o repositório e instale o Docker
-sudo apt update
-sudo apt install -y docker-ce docker-ce-cli containerd.io
+# Cria diretórios
+mkdir -p /opt/nginxproxymanager/databases
+touch /opt/nginxproxymanager/databases/nginxproxy.db
 
-# Instale o Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.6.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+# Cria a rede Docker nginxproxyman se não existir
+if ! docker network inspect nginxproxyman &>/dev/null; then
+    docker network create nginxproxyman
+fi
 
-# Crie os diretórios para o Nginx Proxy Manager
-sudo mkdir -p /etc/nginx-proxy/{data,letsencrypt}
-
-# Crie o arquivo de composição do Docker para o Nginx Proxy Manager
-cat > /etc/nginx-proxy/docker-compose.yml <<EOL
+# Cria arquivo docker-compose.yml
+cat > /opt/nginxproxymanager/docker-compose.yml <<EOL
 version: "3"
 services:
   app:
     image: 'jc21/nginx-proxy-manager:latest'
+    container_name: 'nginxproxymanager'
     restart: unless-stopped
     ports:
       - '80:80'
       - '443:443'
       - '81:81'
     environment:
-      DB_MYSQL_HOST: "db"
-      DB_MYSQL_PORT: 3306
-      DB_MYSQL_USER: "nginxproxy"
-      DB_MYSQL_PASSWORD: "S3NHA_NGINX_PR0XY"
-      DB_MYSQL_NAME: "nginxproxy"
+      DB_SQLITE_FILE: "/data/database.sqlite"
+      DEFAULT_CLIENT_TIMEOUT: 300
     volumes:
-      - /etc/nginx-proxy/data:/data
-      - /etc/nginx-proxy/letsencrypt:/etc/letsencrypt
-    depends_on:
-      - db
-
-  db:
-    image: 'jc21/mariadb-aria:latest'
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: 'S3NHA_D3_R00T'
-      MYSQL_DATABASE: 'nginxproxy'
-      MYSQL_USER: 'nginxproxy'
-      MYSQL_PASSWORD: 'S3NHA_NGINX_PR0XY'
-    volumes:
-      - /etc/nginx-proxy/data/mysql:/var/lib/mysql
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+networks:
+  default:
+    external:
+      name: nginxproxyman
 EOL
 
-# Navegue até o diretório do Nginx Proxy Manager e inicie os contêineres
-cd /etc/nginx-proxy
-sudo docker-compose up -d
+# Configura Firewall
+ufw allow 80
+ufw allow 443
+ufw allow 81
+ufw enable
 
-# Aguarde até que os contêineres sejam iniciados
-sleep 10
+# Inicia Nginx Proxy Manager
+cd /opt/nginxproxymanager
+docker-compose up -d
+
+echo "Nginx Proxy Manager instalado e configurado com sucesso."
+
 
 # Exiba os contêineres em execução
 sudo docker ps -a
