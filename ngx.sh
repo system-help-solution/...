@@ -37,6 +37,9 @@ verificar_e_instalar_dependencias "docker"
 verificar_e_instalar_dependencias "docker-compose"
 
 # Criar a pasta 'ngx' no diretório atual
+
+cd #
+
 echo "Criando a pasta 'ngx'..."
 mkdir -p ngx
 
