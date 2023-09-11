@@ -1,5 +1,8 @@
 #!/bin/bash
 
+sudo ln -s /.../instalador.sh /usr/local/bin/menu
+
+
 # Função para exibir o banner do arquivo banner.sh
 display_banner() {
   clear
