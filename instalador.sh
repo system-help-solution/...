@@ -21,12 +21,12 @@ display_menu() {
   echo "===================================="
   echo
   echo "Escolha uma opção para instalação:"
-  echo "1. Instalar Evolution API"
-  echo "2. Instalar Chatwoot 3.0 Edition"
-  echo "3. Instalar Chatwoot 2.18.0 Edition (se desejado)"
-  echo "4. Instalar Typebot v2.17.2"
-  echo "5. Instalar Nginx Manager"
-  echo "6. Instalar N8N"
+  echo "1. Instalar Chatwoot 3.0 Edition"
+  echo "2. Instalar Evolution API"
+  echo "3. Instalar Typebot v2.17.2"
+  echo "4. Instalar Nginx Manager"
+  echo "5. Instalar Chatwoot 2.18.0 Edition (ainda não está funcional)"
+  echo "6. Instalar N8N (ainda não está funcional)"
   echo "7. Sair"
   echo
 }
@@ -39,7 +39,7 @@ read -p "Digite o número da opção desejada e pressione Enter: " option
 
 # Executa a ação correspondente à opção escolhida
 case $option in
-  1)
+  2)
     # Chama o configurar.sh antes de instalar o Evolution API
     chmod +x configurar.sh
     ./configurar.sh
@@ -47,28 +47,28 @@ case $option in
     chmod +x evo.sh
     ./evo.sh
     ;;
-  2)
+  1)
     # Dar permissão de execução ao chatwoot_3_0.sh
     chmod +x chatwoot_3_0.sh
-    ./chat_3_0.sh
+    ./chatwoot_3_0.sh
     ;;
   3)
-    # Dar permissão de execução ao chatwoot_2_18.sh (se necessário)
-    #chmod +x chatwoot_2_18.sh
-   # ./chatwoot_2_18.sh
-    ;;
-  4)
     # Adicione aqui os comandos para instalar o Typebot v2.17.2
     chmod +x type.sh
     ./type.sh
     ;;
-  5)
+  4)
     # Adicione aqui os comandos para instalar o Nginx Manager
     chmod +x ngx.sh
     ./ngx.sh
     ;;
+  5)
+    # Adicione aqui os comandos para instalar o Chatwoot 2.18.0 Edition
+    # Se você ainda não implementou essa funcionalidade, deixe como está
+    ;;
   6)
     # Adicione aqui os comandos para instalar o N8N
+    # Se você ainda não implementou essa funcionalidade, deixe como está
     ;;
   7)
     echo "Saindo do instalador."
