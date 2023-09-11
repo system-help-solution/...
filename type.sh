@@ -42,26 +42,29 @@ function verificar_e_instalar_dependencias() {
 
 source ./banner.sh
 
+echo "Bem-vindo à configuração do Typeboot!"
+echo "Vou fazer algumas perguntas para configurar seu ambiente."
+echo "Vamos lá!"
+
 # Coleta das informações
 read -p "Por favor, insira seu domínio para o Typeboot: " dominio_typeboot
 read -p "Agora, insira seu domínio para o Boot do Typeboot: " dominio_boot
 read -p "Digite seu email do Google (Gmail): " email_google
 read -p "Digite a senha do aplicativo do Google (Gmail): " senha_app_google
-read -p "Por favor, insira o domínio de data: " dominio_data
+read -p "Por favor, insira a chave gerada: " key_gerada
 
 # Exibe as informações coletadas
 echo -e "\nInformações inseridas:"
 echo "Domínio Typeboot: $dominio_typeboot"
 echo "Domínio Boot Typeboot: $dominio_boot"
-echo "Email do Google: $email_google_google"
-echo "Senha do App do Google: $senha_app_google"
-echo "Domínio de Data: $dominio_data"
+echo "Email do Google: $email_google"
+echo "Senha do App do Google: ************"
+echo "Chave Gerada: $key_gerada"
 
 read -p "As informações estão corretas? (y/n): " confirmacao_final
 
 if [ "$confirmacao_final" == "y" ]; then
   echo "Continuando com a instalação..."
-fi
 
 
   # Verificar e instalar dependências
@@ -78,20 +81,19 @@ fi
   # Criar o arquivo 'docker-compose.yml' com as informações inseridas
   echo "Criando o arquivo 'docker-compose.yml'..."
   cat <<EOL >docker-compose.yml
-version: '3.3'
+version: '3.7'
 services:
-
   typebot-db:
     image: postgres:13
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=typebot # Troque se necessario
-      - POSTGRES_PASSWORD=typebot # Troque se necessario
+      - POSTGRES_DB=typebot # Troque se necessário
+      - POSTGRES_PASSWORD=typebot # Troque se necessário
   typebot-builder:
     labels:
-      virtual.host: '$dominio_typeboot' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$domínio_typeboot' # Troque pelo seu domínio ou subdomínio
       virtual.port: '3000'
       virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-builder:latest
@@ -105,25 +107,25 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
+      - NEXTAUTH_URL=https://$domínio_typeboot # Troque pelo seu domínio ou subdomínio
+      - NEXT_PUBLIC_VIEWER_URL=https://$domínio_boot # Troque pelo seu domínio ou subdomínio
       - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
       - ADMIN_EMAIL=$email_google # Troque pelo seu email
-      #- DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
+      #- DISABLE_SIGNUP=false # Mude para false caso queira permitir que outras pessoas criem contas
       - SMTP_AUTH_DISABLED=false
-      - SMTP_SECURE=false # Troque para false seu nao usar a porta 465 ou se estiver enfretando problemas no login
-      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
-      - SMTP_PORT=465 # altere aqui se nescessario portas comuns 25, 587, 465, 2525
-      - SMTP_USERNAME=$email_google # troque pelo seu email
+      - SMTP_SECURE=false # Troque para false se não usar a porta 465 ou se estiver enfrentando problemas no login
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMÍNIOS PRÓPRIOS
+      - SMTP_PORT=587 # Altere aqui se necessário, portas comuns: 25, 587, 465, 2525
+      - SMTP_USERNAME=$email_google # Troque pelo seu email
       - SMTP_PASSWORD=$senha_app_google # Troque pela sua senha
       - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
-      - S3_ACCESS_KEY=minio # Troque se necessario
-      - S3_SECRET_KEY=minio123 # Troque se necessario
+      - S3_ACCESS_KEY=minio # Troque se necessário
+      - S3_SECRET_KEY=minio123 # Troque se necessário
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=$datar # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$domínio_boot # Troque pelo seu domínio ou subdomínio
   typebot-viewer:
     labels:
-      virtual.host: '$dominio_boot' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$domínio_boot' # Troque pelo seu domínio ou subdomínio
       virtual.port: '3000'
       virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-viewer:latest
@@ -133,21 +135,21 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
+      - NEXTAUTH_URL=https://$domínio_typeboot # Troque pelo seu domínio ou subdomínio
+      - NEXT_PUBLIC_VIEWER_URL=https://$domínio_boot # Troque pelo seu domínio ou subdomínio
       - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
-      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMÍNIOS PRÓPRIOS
       - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
-      - S3_ACCESS_KEY=minio # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
-      - S3_SECRET_KEY=minio123 # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
+      - S3_ACCESS_KEY=minio # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_ACCESS_KEY=
+      - S3_SECRET_KEY=minio123 # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_SECRET_KEY=
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=$datar # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$domínio_boot # Troque pelo seu domínio ou subdomínio
   mail:
     image: bytemark/smtp
     restart: always
   minio:
     labels:
-      virtual.host: '$datar' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$domínio_boot' # Troque pelo seu domínio ou subdomínio
       virtual.port: '9000'
       virtual.tls-email: '$email_google' # Troque pelo seu email
     image: minio/minio
@@ -155,11 +157,11 @@ services:
     ports:
       - '9000:9000'
     environment:
-      MINIO_ROOT_USER: minio # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
-      MINIO_ROOT_PASSWORD: minio123 # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
+      MINIO_ROOT_USER: minio # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_ACCESS_KEY=
+      MINIO_ROOT_PASSWORD: minio123 # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_SECRET_KEY=
     volumes:
       - s3_data:/data
-  # This service just make sure a bucket with the right policies is created
+  # This service just makes sure a bucket with the right policies is created
 
   # Certifique-se de atualizar S3_ACCESS_KEY , S3_SECRET_KEY abaixo para corresponder às suas configurações do S3, elas estão no final dessa linha /usr/bin/mc config host add minio http://minio:9000 minio minio123; sendo o usuario e a senha em sequencia.
   createbuckets:
