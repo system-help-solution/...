@@ -81,20 +81,19 @@ if [ "$confirmacao_final" == "y" ]; then
   # Criar o arquivo 'docker-compose.yml' com as informações inseridas
   echo "Criando o arquivo 'docker-compose.yml'..."
   cat <<EOL >docker-compose.yml
-version: '3.3'
+version: '3.7'
 services:
-
   typebot-db:
     image: postgres:13
     restart: always
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=typebot # Troque se necessario
-      - POSTGRES_PASSWORD=typebot # Troque se necessario
+      - POSTGRES_DB=typebot # Troque se necessário
+      - POSTGRES_PASSWORD=typebot # Troque se necessário
   typebot-builder:
     labels:
-      virtual.host: '$dominio_typeboot' # Troque pelo seu domínio ou subdominio
+      virtual.host: '$domínio_typeboot' # Troque pelo seu domínio ou subdomínio
       virtual.port: '3000'
       virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-builder:latest
@@ -108,25 +107,25 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=$key_gerada
+      - NEXTAUTH_URL=https://$domínio_typeboot # Troque pelo seu domínio ou subdomínio
+      - NEXT_PUBLIC_VIEWER_URL=https://$domínio_boot # Troque pelo seu domínio ou subdomínio
+      - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
       - ADMIN_EMAIL=$email_google # Troque pelo seu email
-      #- DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
+      #- DISABLE_SIGNUP=false # Mude para false caso queira permitir que outras pessoas criem contas
       - SMTP_AUTH_DISABLED=false
-      - SMTP_SECURE=true # Troque para false seu nao usar a porta 465 ou se estiver enfrentando problemas no login
-      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PRÓPRIOS
-      - SMTP_PORT=587 # altere aqui se necessário portas comuns 25, 587, 465, 2525
-      - SMTP_USERNAME=$email_google # troque pelo seu email
+      - SMTP_SECURE=false # Troque para false se não usar a porta 465 ou se estiver enfrentando problemas no login
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMÍNIOS PRÓPRIOS
+      - SMTP_PORT=587 # Altere aqui se necessário, portas comuns: 25, 587, 465, 2525
+      - SMTP_USERNAME=$email_google # Troque pelo seu email
       - SMTP_PASSWORD=$senha_app_google # Troque pela sua senha
       - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
       - S3_ACCESS_KEY=minio # Troque se necessário
       - S3_SECRET_KEY=minio123 # Troque se necessário
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=$dominio_boot # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$domínio_boot # Troque pelo seu domínio ou subdomínio
   typebot-viewer:
     labels:
-      virtual.host: '$dominio_boot' # Troque pelo seu domínio ou subdominio
+      virtual.host: '$domínio_boot' # Troque pelo seu domínio ou subdomínio
       virtual.port: '3000'
       virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-viewer:latest
@@ -136,22 +135,21 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=$key_gerada
-      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PRÓPRIOS
+      - NEXTAUTH_URL=https://$domínio_typeboot # Troque pelo seu domínio ou subdomínio
+      - NEXT_PUBLIC_VIEWER_URL=https://$domínio_boot # Troque pelo seu domínio ou subdomínio
+      - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMÍNIOS PRÓPRIOS
       - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
-      - S3_ACCESS_KEY=minio # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
-      - S3_SECRET_KEY=minio123 # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
+      - S3_ACCESS_KEY=minio # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_ACCESS_KEY=
+      - S3_SECRET_KEY=minio123 # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_SECRET_KEY=
       - S3_BUCKET=typebot
-      
-      - S3_ENDPOINT=$dominio_boot # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$domínio_boot # Troque pelo seu domínio ou subdomínio
   mail:
     image: bytemark/smtp
     restart: always
   minio:
     labels:
-      virtual.host: '$dominio_boot' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$domínio_boot' # Troque pelo seu domínio ou subdomínio
       virtual.port: '9000'
       virtual.tls-email: '$email_google' # Troque pelo seu email
     image: minio/minio
@@ -159,8 +157,8 @@ services:
     ports:
       - '9000:9000'
     environment:
-      MINIO_ROOT_USER: minio # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
-      MINIO_ROOT_PASSWORD: minio123 # Troque se necessário - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
+      MINIO_ROOT_USER: minio # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_ACCESS_KEY=
+      MINIO_ROOT_PASSWORD: minio123 # Troque se necessário - Deve ser igual ao declarado no Typebot Builder S3_SECRET_KEY=
     volumes:
       - s3_data:/data
   # This service just makes sure a bucket with the right policies is created
@@ -183,6 +181,7 @@ volumes:
   s3_data:
   caddy-certificates:
     driver: local
+
 EOL
 
   echo "Arquivo 'docker-compose.yml' criado com sucesso!"
