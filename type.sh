@@ -83,18 +83,7 @@ if [ "$confirmacao_final" == "y" ]; then
   cat <<EOL >docker-compose.yml
 version: '3.3'
 services:
-  caddy-gen:
-    image: 'wemakeservices/caddy-gen:latest'
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - caddy-certificates:/data/caddy
-    ports:
-      - '82:80'
-      - '8443:443'
-    depends_on:
-      - typebot-builder
-      - typebot-viewer
+
   typebot-db:
     image: postgres:13
     restart: always
@@ -123,7 +112,7 @@ services:
       - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
       - ENCRYPTION_SECRET=$key_gerada
       - ADMIN_EMAIL=$email_google # Troque pelo seu email
-      - DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
+      #- DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
       - SMTP_AUTH_DISABLED=false
       - SMTP_SECURE=true # Troque para false seu nao usar a porta 465 ou se estiver enfrentando problemas no login
       - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PRÓPRIOS
