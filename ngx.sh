@@ -31,9 +31,9 @@ services:
     container_name: 'nginxproxymanager'
     restart: unless-stopped
     ports:
-      - '80:80'
-      - '443:443'
-      - '81:81'
+      - '87:80'
+      - '8543:443'
+      - '82:82'
     environment:
       DB_SQLITE_FILE: "/data/database.sqlite"
       DEFAULT_CLIENT_TIMEOUT: 300
@@ -49,7 +49,7 @@ EOL
 # Configura Firewall
 ufw allow 80
 ufw allow 443
-ufw allow 81
+ufw allow 82
 ufw enable
 
 # Inicia Nginx Proxy Manager
