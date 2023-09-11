@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+curl -fsSL https://get.docker.com | sh && \
+sudo usermod -aG docker $USER && \
+sudo apt-get install docker-compose -y
+
+
 # Verifica se o script está sendo executado como root (sudo)
 if [[ $EUID -ne 0 ]]; then
     echo "Este script deve ser executado como root (sudo)." 
@@ -24,34 +30,27 @@ fi
 
 # Cria arquivo docker-compose.yml
 cat > /opt/nginxproxymanager/docker-compose.yml <<EOL
-version: "3"
+version: '3.7'
 services:
-  app:
+  
+  proxy:
     image: 'jc21/nginx-proxy-manager:latest'
-    container_name: 'nginxproxymanager'
+    container_name: nginx-poxymanager
     restart: unless-stopped
     ports:
-      - '87:80'
-      - '8543:443'
-      - '82:82'
-    environment:
-      DB_SQLITE_FILE: "/data/database.sqlite"
-      DEFAULT_CLIENT_TIMEOUT: 300
+      - '80:80'
+      - '81:81'
+      - '443:443'
     volumes:
       - ./data:/data
       - ./letsencrypt:/etc/letsencrypt
-networks:
-  default:
-    external:
-      name: nginxproxyman
-EOL
+    networks:
+      - proxy_manager
 
-# Configura Firewall
-ufw allow 80
-ufw allow 443
-ufw allow 82
-ufw enable
-
+   networks:
+      name: proxy_manager
+          
+    
 # Inicia Nginx Proxy Manager
 cd /opt/nginxproxymanager
 docker-compose up -d
@@ -66,8 +65,3 @@ echo "A instalação do Nginx Proxy Manager foi concluída. Acesse http://SEU_IP
 echo "Use o seguinte login inicial:"
 echo "Email: admin@example.com"
 echo "Senha: changeme"
-
-cd #
-cd ...
-
-./instalador.sh
