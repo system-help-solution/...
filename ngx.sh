@@ -22,11 +22,16 @@ check_root() {
   fi
 }
 
-# Função para instalar Docker e Docker Compose
+# Função para instalar Docker e Docker Compose, se necessário
 install_docker() {
-  curl -fsSL https://get.docker.com | sh && \
-  sudo usermod -aG docker $USER && \
-  sudo apt-get install docker-compose -y
+  if ! [ -x "$(command -v docker)" ]; then
+    curl -fsSL https://get.docker.com | sh && \
+    sudo usermod -aG docker $USER
+  fi
+
+  if ! [ -x "$(command -v docker-compose)" ]; then
+    sudo apt-get install docker-compose -y
+  fi
 }
 
 # Função para atualizar o sistema e instalar dependências
@@ -38,8 +43,8 @@ update_and_install() {
 
 # Função para criar diretórios e rede Docker
 setup_directories_and_network() {
-  mkdir -p /opt/nginxproxymanager/databases
-  touch /opt/nginxproxymanager/databases/nginxproxy.db
+  mkdir -p ~/nginxproxymanager/databases
+  touch ~/nginxproxymanager/databases/nginxproxy.db
 
   if ! docker network inspect nginxproxyman &>/dev/null; then
       docker network create nginxproxyman
@@ -48,7 +53,7 @@ setup_directories_and_network() {
 
 # Função para criar arquivo docker-compose.yml
 create_docker_compose_file() {
-  cat > /opt/nginxproxymanager/docker-compose.yml <<EOL
+  cat > ~/nginxproxymanager/docker-compose.yml <<EOL
 version: '3.7'
 services:
   proxy:
@@ -71,7 +76,7 @@ EOL
 
 # Função para iniciar Nginx Proxy Manager
 start_nginx_proxy_manager() {
-  cd /opt/nginxproxymanager
+  cd ~/nginxproxymanager
   docker-compose up -d
   echo "Nginx Proxy Manager instalado e configurado com sucesso."
 }
