@@ -37,7 +37,7 @@ done
 echo "Baixando Evolution API..."
 
 # Navega até o diretório onde você deseja clonar o repositório
-cd ~/evolutionApi_modificacoes
+cd ~
 
 # Clona o repositório
 git clone https://github.com/system-help-solution/evolutionApi_modificacoes.git
