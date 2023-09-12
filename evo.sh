@@ -47,9 +47,9 @@ cd ~/evolution-api/src
 
 cd evolution-api
 
-git branch -a
+#git branch -a
 
-git checkout develop
+#git checkout develop
 
 # Edita o arquivo dev-env.yml para configurar a porta e URL corretamente
 sed -i "s/PORT: 8080/PORT: $porta_vps/" dev-env.yml
