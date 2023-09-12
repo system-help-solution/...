@@ -115,7 +115,7 @@ services:
       - SMTP_AUTH_DISABLED=false
       - SMTP_SECURE=false # Troque para false seu nao usar a porta 465 ou se estiver enfretando problemas no login
       - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
-      - SMTP_PORT=465 # altere aqui se nescessario portas comuns 25, 587, 465, 2525
+      - SMTP_PORT=587 # altere aqui se nescessario portas comuns 25, 587, 465, 2525
       - SMTP_USERNAME=$email_google # troque pelo seu email
       - SMTP_PASSWORD=$senha_app_google # Troque pela sua senha
       - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
