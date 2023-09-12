@@ -1,17 +1,6 @@
 version: '3.3'
 services:
-  caddy-gen:
-    image: 'wemakeservices/caddy-gen:latest'
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - caddy-certificates:/data/caddy
-    ports:
-      - '81:80'
-      - '8443:443'
-    depends_on:
-      - typebot-builder
-      - typebot-viewer
+
   typebot-db:
     image: postgres:13
     restart: always
@@ -22,10 +11,10 @@ services:
       - POSTGRES_PASSWORD=typebot # Troque se necessario
   typebot-builder:
     labels:
-      virtual.host: 'typebot.meusite.com.br' # Troque pelo seu dominio ou subdominio
+      virtual.host: 'fluxo.systemhelp.site' # Troque pelo seu dominio ou subdominio
       virtual.port: '3000'
-      virtual.tls-email: 'seu@email.com' # Troque pelo seu email
-    image: baptistearno/typebot-builder:latest
+      virtual.tls-email: 'system.help.tutoriais@gmail.com' # Troque pelo seu email
+    image: elestio/typebot-builder:latest
     restart: always
     ports:
       - '3001:3000'
@@ -36,51 +25,51 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://dominio_typeboot # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://bot.meusite.com.br # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=K+Bar660Ofaec7v1jHC25tAn3l2b7c81
-      - ADMIN_EMAIL=seu@email.com # Troque pelo seu email
-      - DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
+      - NEXTAUTH_URL=https://fluxo.systemhelp.site # Troque pelo seu dominio ou subdominio
+      - NEXT_PUBLIC_VIEWER_URL=https://fluxo.bot.systemhelp.site # Troque pelo seu dominio ou subdominio
+      - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
+      - ADMIN_EMAIL=system.help.tutoriais@gmail.com # Troque pelo seu email
+      #- DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
       - SMTP_AUTH_DISABLED=false
       - SMTP_SECURE=false # Troque para false seu nao usar a porta 465 ou se estiver enfretando problemas no login
-      - SMTP_HOST=email_google # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
       - SMTP_PORT=587 # altere aqui se nescessario portas comuns 25, 587, 465, 2525
-      - SMTP_USERNAME=email_google # troque pelo seu email
-      - SMTP_PASSWORD=senhadoemail # Troque pela sua senha
-      - NEXT_PUBLIC_SMTP_FROM=seu@email.com # Troque pelo seu email
+      - SMTP_USERNAME=system.help.tutoriais@gmail.com # troque pelo seu email
+      - SMTP_PASSWORD=dykyhanmtiddrzoj # Troque pela sua senha
+      - NEXT_PUBLIC_SMTP_FROM=system.help.tutoriais@gmail.com # Troque pelo seu email
       - S3_ACCESS_KEY=minio # Troque se necessario
       - S3_SECRET_KEY=minio123 # Troque se necessario
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=storage.meusite.com.br # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=fluxo.memoria.systemhelp.site # Troque pelo seu dominio ou subdominio
   typebot-viewer:
     labels:
-      virtual.host: 'dominio_boot' # Troque pelo seu dominio ou subdominio
+      virtual.host: 'fluxo.bot.systemhelp.site' # Troque pelo seu dominio ou subdominio
       virtual.port: '3000'
-      virtual.tls-email: 'seu@email.com' # Troque pelo seu email
-    image: baptistearno/typebot-viewer:latest
+      virtual.tls-email: 'system.help.tutoriais@gmail.com' # Troque pelo seu email
+    image: elestio/typebot-viewer:latest
     restart: always
     ports:
       - '3002:3000'
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://typebot.meusite.com # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://bot.meusite.com.br # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=K+Bar660Ofaec7v1jHC25tAn3l2b7c81
+      - NEXTAUTH_URL=https://fluxo.systemhelp.site # Troque pelo seu dominio ou subdominio
+      - NEXT_PUBLIC_VIEWER_URL=https://fluxo.bot.systemhelp.site # Troque pelo seu dominio ou subdominio
+      - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
       - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
-      - NEXT_PUBLIC_SMTP_FROM=seu@email.com # .Troque pelo seu email
+      - NEXT_PUBLIC_SMTP_FROM=system.help.tutoriais@gmail.com # Troque pelo seu email
       - S3_ACCESS_KEY=minio # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
       - S3_SECRET_KEY=minio123 # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=storage.meusite.com.br # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=fluxo.memoria.systemhelp.site # Troque pelo seu dominio ou subdominio
   mail:
     image: bytemark/smtp
     restart: always
   minio:
     labels:
-      virtual.host: 'storage.meusite.com.br' # Troque pelo seu dominio ou subdominio
+      virtual.host: 'fluxo.memoria.systemhelp.site' # Troque pelo seu dominio ou subdominio
       virtual.port: '9000'
-      virtual.tls-email: 'email_google' # Troque pelo seu email
+      virtual.tls-email: 'system.help.tutoriais@gmail.com' # Troque pelo seu email
     image: minio/minio
     command: server /data
     ports:
@@ -110,3 +99,4 @@ volumes:
   s3_data:
   caddy-certificates:
     driver: local
+
