@@ -40,13 +40,19 @@ echo "Baixando Evolution API..."
 cd ~
 
 # Clona o repositório
-git clone https://github.com/system-help-solution/evolutionApi_modificacoes.git
+git clone https://github.com/EvolutionAPI/evolution-api.git
 
 # Navega até o diretório da Evolution API
-cd ~/evolutionApi_modificacoes/src
+cd ~/evolution-api/src
+
+cd evolution-api
+
+git branch -a
+
+git checkout develop
 
 # Edita o arquivo dev-env.yml para configurar a porta e URL corretamente
-sed -i "s/PORT: 8081/PORT: $porta_vps/" dev-env.yml
+sed -i "s/PORT: 8080/PORT: $porta_vps/" dev-env.yml
 sed -i "s/URL: localhost/URL: http:\/\/$ip_vps:$porta_vps/" dev-env.yml
 
 # Renomeia o arquivo dev-env.yml para env.yml
@@ -55,7 +61,7 @@ mv dev-env.yml env.yml
 echo "Arquivo dev-env.yml renomeado para env.yml com sucesso."
 
 # Volta para o diretório principal
-cd ~/evolutionApi_modificacoes
+cd ~/evolution-api
 
 # Instalação e configuração do Evolution API
 echo "Instalando pacotes..."
