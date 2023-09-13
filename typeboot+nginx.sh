@@ -216,7 +216,7 @@ services:
       virtual.host: '$builder' # Troque pelo seu dominio ou subdominio
       virtual.port: '3000'
       virtual.tls-email: '$email' # Troque pelo seu email
-    image: elestio/typebot-builder:latest
+    image: baptistearno/typebot-builder:latest
     restart: always
     ports:
       - '$portabuilder:3000'
@@ -248,7 +248,7 @@ services:
       virtual.host: '$viewer' # Troque pelo seu dominio ou subdominio
       virtual.port: '3000'
       virtual.tls-email: '$email' # Troque pelo seu email
-    image: elestio/typebot-viewer:latest
+    image: baptistearno/typebot-viewer:latest
     restart: always
     ports:
       - '$portaviewer:3000'
