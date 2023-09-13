@@ -28,7 +28,7 @@ display_menu() {
   echo "2. Instalar Evolution API"
   echo "3. Instalar Typebot v2.17.2"
   echo "4. Instalar Nginx Manager"
-  echo "5. Instalar Chatwoot 2.18.0 Edition (ainda não está funcional)"
+  echo "5. Typeboot com Nginx configurado  (VIDEO ATUALIZADO)"
   echo "6. Instalar N8N (ainda não está funcional)"
   echo "7. Sair"
   echo
