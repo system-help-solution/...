@@ -68,7 +68,7 @@ case $option in
   5)
     # Adicione aqui os comandos para instalar o Chatwoot 2.18.0 Edition
     chmod +x typeboot+nginx.sh
-    ./ngx.sh
+    ./typeboot+nginx.sh
     ;;
   6)
     # Adicione aqui os comandos para instalar o N8N
