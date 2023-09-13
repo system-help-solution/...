@@ -448,7 +448,7 @@ sudo ln -s /etc/nginx/sites-available/storage /etc/nginx/sites-enabled
 
 echo "proxy reverso da Evolution e do typebot"
 
-sudo certbot --nginx --email $email --redirect --agree-tos -d $dominio -d $builder -d $viewer -d $storage
+sudo certbot --nginx --email $email --redirect --agree-tos  -d $builder -d $viewer -d $storage
 
 
 #######################################################
