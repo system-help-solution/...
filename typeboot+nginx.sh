@@ -231,7 +231,7 @@ services:
       - NEXT_PUBLIC_VIEWER_URL=https://$viewer # Troque pelo seu dominio ou subdominio
       - ENCRYPTION_SECRET=$key
       - ADMIN_EMAIL=$email # Troque pelo seu email
-      #- DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
+      - DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
       - SMTP_AUTH_DISABLED=false
       - SMTP_SECURE=false # Troque para false seu nao usar a porta 465 ou se estiver enfretando problemas no login
       - SMTP_HOST=$smtp # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
