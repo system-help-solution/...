@@ -237,7 +237,7 @@ services:
       - SMTP_HOST=$smtp # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
       - SMTP_PORT=$portasmtp # altere aqui se nescessario portas comuns 25, $portasmtp, 465, 2525
       - SMTP_USERNAME=$email # troque pelo seu email
-      - SMTP_PASSWORD=$SECURE # Troque pela sua senha
+      - SMTP_PASSWORD=$senha # Troque pela sua senha
       - NEXT_PUBLIC_SMTP_FROM=$email # Troque pelo seu email
       - S3_ACCESS_KEY=minio # Troque se necessario
       - S3_SECRET_KEY=minio123 # Troque se necessario
