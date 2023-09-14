@@ -1,144 +1,72 @@
 #!/bin/bash
 
-# Função para exibir o banner do arquivo banner.sh
-display_banner() {
-  clear
-  if [ -f banner.sh ]; then
-    source banner.sh
-  else
-    echo "Banner não encontrado. Verifique se o arquivo banner.sh está na mesma pasta."
-  fi
-  sleep 3  # Tempo de exibição do banner (3 segundos)
+# Incluir o banner.sh para exibição do banner
+source ./banner.sh
+
+# Função para coletar uma variável com confirmação
+function coletar_com_confirmacao() {
+  local mensagem="$1"
+  local variavel=""
+  local confirmacao=""
+
+  while [ -z "$variavel" ] || [ "$confirmacao" != "y" ]; do
+    read -p "$mensagem: " -s variavel
+    echo
+    read -p "Confirme parte da senha (os últimos caracteres): " -s confirmacao
+    echo
+    if [ "$confirmacao" != "y" ]; then
+      variavel=""
+    fi
+  done
+
+  echo "$variavel"
 }
 
-# Exibe o banner informativo
-display_banner
-
-#######################################################
-
-
-#######################################################
-
-
-
-    # Função para configurar o TypeBot
-    echo "Agora vamos configurar o Typebot para rodar em Docker"
-echo ""
-while true; do
-    read -p "Qual é o seu domínio para o Typebot (ex: typebot.seudominio.com): " builder
-
-    while [ -z "$builder" ]; do
-        echo "Resposta inválida. O domínio do Typebot não pode ser vazio."
-        read -p "Qual é o seu domínio para o Typebot (ex: typebot.seudominio.com): " builder
-    done
-
-    echo ""
-    read -p "Porta para o Typebot (padrão: 3301): " portabuilder
-
-    while [ -z "$portabuilder" ]; do
-        portabuilder="3301"
-    done
-
-    read -p "Qual é o seu domínio para o Bot (ex: bot.seudominio.com): " viewer
-
-    while [ -z "$viewer" ]; do
-        echo "Resposta inválida. O domínio do Bot não pode ser vazio."
-        read -p "Qual é o seu domínio para o Bot (ex: bot.seudominio.com): " viewer
-    done
-
-    echo ""
-    read -p "Porta para seu Bot (padrão: 3302): " portaviewer
-
-    while [ -z "$portaviewer" ]; do
-        portaviewer="3302"
-    done
-
-    read -p "Qual é o seu domínio para o Storage (ex: storage.seudominio.com): " storage
-
-    while [ -z "$storage" ]; do
-        echo "Resposta inválida. O domínio do Storage não pode ser vazio."
-        read -p "Qual é o seu domínio para o Storage (ex: storage.seudominio.com): " storage
-    done
-
-    echo ""
-    read -p "Porta para o Storage (padrão: 9020): " portastorage
-
-    while [ -z "$portastorage" ]; do
-        portastorage="9020"
-    done
-
-    read -p "Seu Email (eu configurei para que funcione com o Gmail, então, em outro email, pode não funcionar): " email
-
-    while [ -z "$email" ]; do
-        echo "Resposta inválida. O Email não pode ser vazio."
-        read -p "Seu Email (eu configurei para que funcione com o Gmail, então, em outro email, pode não funcionar): " email
-    done
-
-    echo ""
-    read -p "Senha do aplicativo do Gmail (se você não souber o que é, pare aqui e procure): " senha
-
-    while [ -z "$senha" ]; do
-        echo "Resposta inválida. A senha não pode ser vazia."
-        read -p "Senha do aplicativo do Gmail (se você não souber o que é, pare aqui e procure): " senha
-    done
-
-    echo ""
-    read -p "SMTP do Gmail (ex: $smtp): " smtp
-
-    while [ -z "$smtp" ]; do
-        echo "Resposta inválida. O SMTP do Gmail não pode ser vazio."
-        read -p "SMTP do Gmail (ex: $smtp): " smtp
-    done
-
-    echo ""
-    read -p "Porta SMTP (ex: $portasmtp): " portasmtp
-
-    while [ -z "$portasmtp" ]; do
-        echo "Resposta inválida. A porta SMTP não pode ser vazia."
-        read -p "Porta SMTP (ex: $portasmtp): " portasmtp
-    done
-
-    echo ""
-    read -p "SMTP_SECURE (Se a porta SMTP for $portasmtp, digite false; caso contrário, digite true): " SECURE
-
-    while [ -z "$SECURE" ]; do
-        echo "Resposta inválida. O campo SMTP_SECURE não pode ser vazio."
-        read -p "SMTP_SECURE (Se a porta SMTP for $portasmtp, digite false; caso contrário, digite true): " SECURE
-    done
-
-        echo "Crie sua ApiKey no link: https://codebeautify.org/generate-random-hexadecimal-numbers"
-        read -p "Chave secreta de 32 caracteres: (ex: c56f3775313440c3edce57529a0f02b4) " key
-
-    while [ ${#key} -ne 32 ]; do
-        echo "A chave secreta deve ter exatamente 32 caracteres."
-        read -p "Chave secreta de 32 caracteres: (ex: c56f3775313440c3edce57529a0f02b4) " key
-    done
-
-    echo ""
-    echo "As informações fornecidas estão corretas?"
-    echo "Domínio do Typebot: $builder"
-    echo "Porta do Typebot: $portabuilder"
-    echo "Domínio do Bot: $viewer"
-    echo "Porta do Bot: $portaviewer"
-    echo "Domínio do Storage: $storage"
-    echo "Porta do Storage deve se manter 9000 caso tenha trocado dados up nao vai funcionar: $portastorage"
-    echo "Email: $email"
-    echo "SMTP do Gmail: $smtp"
-    echo "Porta SMTP: $portasmtp"
-    echo "SMTP_SECURE: $SECURE"
-    echo "Chave secreta (ApiKey): $key"
-    read -p "Digite 'Y' para continuar ou 'N' para corrigir: " confirmacao
-
-    if [ "$confirmacao" = "Y" ] || [ "$confirmacao" = "y" ]; then
-        break
-    elif [ "$confirmacao" = "N" ] || [ "$confirmacao" = "n" ]; then
-        continue
+# Função para verificar e instalar dependências
+function verificar_e_instalar_dependencias() {
+  local dependencia="$1"
+  if ! command -v "$dependencia" &>/dev/null; then
+    echo "$dependencia não encontrado. Instalando..."
+    if [ "$dependencia" == "docker" ]; then
+      sudo apt update -y
+      sudo apt install -y docker.io
+    elif [ "$dependencia" == "docker-compose" ]; then
+      sudo apt update -y
+      sudo apt install -y docker-compose
+    else
+      echo "Dependência desconhecida: $dependencia. Por favor, instale manualmente."
+      exit 1
     fi
-done
+  fi
+}
 
-# O script continuará a partir daqui com as informações corretas
+source ./banner.sh
+
+# Coleta das informações
+read -p "Por favor, insira seu domínio para o Typeboot: " dominio_typeboot
+read -p "Agora, insira seu domínio para o Boot do Typeboot: " dominio_boot
+read -p "Digite seu email do Google (Gmail): " email_google
+read -p "Digite a senha do aplicativo do Google (Gmail): " senha_app_google
+read -p "Por favor, insira o domínio de data: " dominio_data
+
+# Exibe as informações coletadas
+echo -e "\nInformações inseridas:"
+echo "Domínio Typeboot: $dominio_typeboot"
+echo "Domínio Boot Typeboot: $dominio_boot"
+echo "Email do Google: $email_google_google"
+echo "Senha do App do Google: $senha_app_google"
+echo "Domínio de Data: $dominio_data"
+
+read -p "As informações estão corretas? (y/n): " confirmacao_final
+
+if [ "$confirmacao_final" == "y" ]; then
+  echo "Continuando com a instalação..."
+fi
 
 
+  # Verificar e instalar dependências
+  verificar_e_instalar_dependencias "docker"
+  verificar_e_instalar_dependencias "docker-compose"
 #######################################################
 
 echo "Instalando as Dependencias"
@@ -192,14 +120,18 @@ cd
 cd
 
 #######################################################
+  # Criar a pasta 'typeboot' no diretório raiz
 
-echo "Instalando Typebot"
+  cd # 
+  echo "Criando a pasta 'typeboot'..."
+  mkdir ~/typeboot
 
-echo "Criando arquivo docker-compose.yml"
+  # Navegar até a pasta 'typeboot'
+  cd ~/typeboot
 
-sleep 3
-
-cat > docker-compose.yml << EOL
+  # Criar o arquivo 'docker-compose.yml' com as informações inseridas
+  echo "Criando o arquivo 'docker-compose.yml'..."
+  cat <<EOL >docker-compose.yml
 version: '3.3'
 services:
 
@@ -213,13 +145,13 @@ services:
       - POSTGRES_PASSWORD=typebot # Troque se necessario
   typebot-builder:
     labels:
-      virtual.host: '$builder' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$dominio_typeboot' # Troque pelo seu dominio ou subdominio
       virtual.port: '3000'
-      virtual.tls-email: '$email' # Troque pelo seu email
+      virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-builder:latest
     restart: always
     ports:
-      - '$portabuilder:3000'
+      - '3001:3000'
     depends_on:
       - typebot-db
     extra_hosts:
@@ -227,51 +159,51 @@ services:
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$builder # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$viewer # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=$key
-      - ADMIN_EMAIL=$email # Troque pelo seu email
+      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
+      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
+      - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
+      - ADMIN_EMAIL=$email_google # Troque pelo seu email
       #- DISABLE_SIGNUP=false # Mude Para false caso queira permitir que outras pessoas criem contas
       - SMTP_AUTH_DISABLED=false
       - SMTP_SECURE=false # Troque para false seu nao usar a porta 465 ou se estiver enfretando problemas no login
-      - SMTP_HOST=$smtp # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
-      - SMTP_PORT=$portasmtp # altere aqui se nescessario portas comuns 25, $portasmtp, 465, 2525
-      - SMTP_USERNAME=$email # troque pelo seu email
-      - SMTP_PASSWORD=$senha # Troque pela sua senha
-      - NEXT_PUBLIC_SMTP_FROM=$email # Troque pelo seu email
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
+      - SMTP_PORT=587 # altere aqui se nescessario portas comuns 25, 587, 465, 2525
+      - SMTP_USERNAME=$email_google # troque pelo seu email
+      - SMTP_PASSWORD=$senha_app_google # Troque pela sua senha
+      - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
       - S3_ACCESS_KEY=minio # Troque se necessario
       - S3_SECRET_KEY=minio123 # Troque se necessario
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=$storage # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$dominio_data # Troque pelo seu dominio ou subdominio
   typebot-viewer:
     labels:
-      virtual.host: '$viewer' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$dominio_boot' # Troque pelo seu dominio ou subdominio
       virtual.port: '3000'
-      virtual.tls-email: '$email' # Troque pelo seu email
+      virtual.tls-email: '$email_google' # Troque pelo seu email
     image: baptistearno/typebot-viewer:latest
     restart: always
     ports:
-      - '$portaviewer:3000'
+      - '3002:3000'
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     environment:
       - DATABASE_URL=postgresql://postgres:typebot@typebot-db:5432/typebot
-      - NEXTAUTH_URL=https://$builder # Troque pelo seu dominio ou subdominio
-      - NEXT_PUBLIC_VIEWER_URL=https://$viewer # Troque pelo seu dominio ou subdominio
-      - ENCRYPTION_SECRET=$key
-      - SMTP_HOST=$smtp # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
-      - NEXT_PUBLIC_SMTP_FROM=$email # Troque pelo seu email
+      - NEXTAUTH_URL=https://$dominio_typeboot # Troque pelo seu dominio ou subdominio
+      - NEXT_PUBLIC_VIEWER_URL=https://$dominio_boot # Troque pelo seu dominio ou subdominio
+      - ENCRYPTION_SECRET=c56f3775313440c3edce57529a0f02b4
+      - SMTP_HOST=smtp.gmail.com # Troque pelo seu SMTP USE SOMENTE DOMINIO PROPRIETARIOS
+      - NEXT_PUBLIC_SMTP_FROM=$email_google # Troque pelo seu email
       - S3_ACCESS_KEY=minio # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_ACCESS_KEY=
       - S3_SECRET_KEY=minio123 # Troque se necessario - Deve ser Igual ao Declarado no Typebot Builder S3_SECRET_KEY=
       - S3_BUCKET=typebot
-      - S3_ENDPOINT=$storage # Troque pelo seu dominio ou subdominio
+      - S3_ENDPOINT=$dominio_data # Troque pelo seu dominio ou subdominio
   mail:
     image: bytemark/smtp
     restart: always
   minio:
     labels:
-      virtual.host: '$storage' # Troque pelo seu dominio ou subdominio
+      virtual.host: '$dominio_data' # Troque pelo seu dominio ou subdominio
       virtual.port: '9000'
-      virtual.tls-email: '$email' # Troque pelo seu email
+      virtual.tls-email: '$email_google' # Troque pelo seu email
     image: minio/minio
     command: server /data
     ports:
@@ -304,25 +236,22 @@ volumes:
 
 EOL
 
-echo "Criado e configurado com sucesso"
+  echo "Arquivo 'docker-compose.yml' criado com sucesso!"
 
-sleep 3
+  # Executar 'docker-compose up -d'
+  echo "Executando 'docker-compose up -d'..."
+  docker-compose up -d
+  if [ $? -eq 0 ]; then
+    echo "Typeboot foi iniciado com sucesso!"
+  else
+    echo "Erro ao iniciar o Typeboot. Verifique as dependências e tente novamente."
+  fi
 
-clear
+else
+  echo "As informações não estão corretas. Por favor, execute o script novamente."
+fi
 
-###############################################
 
-echo "Iniciando Conteiner"
-
-sleep 3
-
-docker-compose up -d
-
-echo "Typebot Instaldo... Realizando Proxy Reverso"
-
-sleep 3
-
-clear
 
 ###############################################
 
@@ -446,9 +375,27 @@ sudo ln -s /etc/nginx/sites-available/storage /etc/nginx/sites-enabled
 
 #######################################################
 
+
+
+
 echo "proxy reverso da Evolution e do typebot"
 
-sudo certbot --nginx --email $email --redirect --agree-tos  -d $builder -d $viewer -d $storage
+sudo certbot --nginx --email $email_google_google --redirect --agree-tos  -d $dominio_typeboot -d $dominio_boot -d $dominio_data
+
+
+# Exibe as informações coletadas
+echo -e "\nInformações inseridas:"
+echo "Domínio Typeboot: $dominio_typeboot"
+echo "Domínio Boot Typeboot: $dominio_boot"
+echo "Email do Google: $email_google_google"
+echo "Senha do App do Google: $senha_app_google"
+echo "Domínio de Data: $dominio_data"
+
+read -p "As informações estão corretas? (y/n): " confirmacao_final
+
+if [ "$confirmacao_final" == "y" ]; then
+  echo "Continuando com a instalação..."
+fi
 
 
 #######################################################
