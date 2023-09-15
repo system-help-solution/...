@@ -292,9 +292,51 @@ pm2 save --force
 
 #######################################################
 
+clear
+
+cd
+
+cd
+
+echo "Proxy Reverso"
+
+cat > api << EOL
+server {
+  server_name $dominio;
+
+  location / {
+    proxy_pass http://127.0.0.1:$porta;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_cache_bypass \$http_upgrade;
+  }
+}
+EOL
+
+#######################################################
+clear
+cd
+
+sudo mv api /etc/nginx/sites-available/api
+
+ln -s /etc/nginx/sites-available/api /etc/nginx/sites-enabled
+
+systemctl reload nginx
+
+###############
+###############
+###############
+
+#######################################################
+
 echo "proxy reverso da Evolution e do typebot"
 
-sudo certbot --nginx --email $email --redirect --agree-tos -d $dominio 
+sudo certbot --nginx --email gamerhfj@gmail.com --redirect --agree-tos -d $dominio 
 
 
 #######################################################
