@@ -1,7 +1,6 @@
 #!/bin/bash
 
-sudo ln -s /.../instalador.sh /usr/local/bin/menu
-
+sudo ln -s /caminho/para/seu/instalador.sh /usr/local/bin/menu
 
 # Função para exibir o banner do arquivo banner.sh
 display_banner() {
@@ -24,12 +23,12 @@ display_menu() {
   echo "===================================="
   echo
   echo "Escolha uma opção para instalação:"
-  echo "1. Instalar Chatwoot 3.0 Edition"
-  echo "2. Instalar Evolution API"
-  echo "3. Instalar Typebot v2.17.2"
-  echo "4. Instalar Nginx Manager"
-  echo "5. Typeboot com Nginx configurado  (VIDEO ATUALIZADO)"
-  echo "6. Instalar N8N (ainda não está funcional)"
+  echo "1. Instalar Typebot v2.17.2"
+  echo "2. Instalar Typeboot com Nginx configurado (VIDEO ATUALIZADO)"
+  echo "3. Instalar Evolution API"
+  echo "4. Instalar Evolution API com proxy reverso"
+  echo "5. Instalar Chatwoot 3.0 Edition"
+  echo "6. Instalar Nginx Manager"
   echo "7. Sair"
   echo
 }
@@ -42,37 +41,36 @@ read -p "Digite o número da opção desejada e pressione Enter: " option
 
 # Executa a ação correspondente à opção escolhida
 case $option in
-  2)
-    # Chama o configurar.sh antes de instalar o Evolution API
-    chmod +x configurar.sh
-    ./configurar.sh
-    # Chama o evo.sh após o configurar.sh
-    chmod +x evo.sh
-    ./evo.sh
-    ;;
   1)
-    # Dar permissão de execução ao chatwoot_3_0.sh
-    chmod +x chatwoot_3_0.sh
-    ./chatwoot_3_0.sh
+    # Adicione aqui os comandos para instalar o Typebot v2.17.2
+    chmod +x 1type.sh
+    ./1type.sh
+    ;;
+  2)
+    # Adicione aqui os comandos para instalar o Typeboot com Nginx configurado (VIDEO ATUALIZADO)
+    chmod +x 2typengx.sh
+    ./2typengx.sh
     ;;
   3)
-    # Adicione aqui os comandos para instalar o Typebot v2.17.2
-    chmod +x type.sh
-    ./type.sh
+    # Adicione aqui os comandos para instalar o Evolution API
+    chmod +x 3evo.sh
+    ./3evo.sh
     ;;
   4)
-    # Adicione aqui os comandos para instalar o Nginx Manager
-    chmod +x ngx.sh
-    ./ngx.sh
+    # Adicione aqui os comandos para instalar o Evolution API com proxy reverso
+    # Certifique-se de que o script 4evo-proxy.sh esteja presente e seja executável
+    chmod +x 4evo-proxy.sh
+    ./4evo-proxy.sh
     ;;
   5)
-    # Adicione aqui os comandos para instalar o Chatwoot 2.18.0 Edition
-    chmod +x typeboot+nginx.sh
-    ./typeboot+nginx.sh
+    # Adicione aqui os comandos para instalar o Chatwoot 3.0 Edition
+    chmod +x 5chatwoot_3_0.sh
+    ./5chatwoot_3_0.sh
     ;;
   6)
-    # Adicione aqui os comandos para instalar o N8N
-    # Se você ainda não implementou essa funcionalidade, deixe como está
+    # Adicione aqui os comandos para instalar o Nginx Manager
+    chmod +x 6ngx-manager.sh
+    ./6ngx-manager.sh
     ;;
   7)
     echo "Saindo do instalador."
